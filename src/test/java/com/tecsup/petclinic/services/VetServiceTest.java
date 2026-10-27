@@ -1,5 +1,6 @@
 package com.tecsup.petclinic.services;
 
+import com.tecsup.petclinic.dtos.VetDTO;
 import com.tecsup.petclinic.exceptions.VetNotFoundException;
 import com.tecsup.petclinic.repositories.VetRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -9,9 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
+import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @Slf4j
@@ -44,4 +48,13 @@ public class VetServiceTest {
             vetService.deactivate(idInexistente);
         });
     }
+
+    @Test
+    public void testFindInactiveVets() {
+        List<VetDTO> inactivos = vetService.findInactiveVets();
+
+        assertNotNull(inactivos);
+        assertTrue(inactivos.isEmpty());
+    }
+
 }
