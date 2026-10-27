@@ -65,4 +65,50 @@ public class VetServiceTest {
         assertEquals(PHONE, newVetDTO.getPhone());
         assertEquals(ACTIVE, newVetDTO.getActive());
     }
+    @Test
+    public void testUpdateVet() {
+
+        String FIRST_NAME = "Carlos";
+        String LAST_NAME = "Perez";
+        String EMAIL = "carlos.perez@petclinic.com";
+        String PHONE = "999888777";
+        Boolean ACTIVE = true;
+
+        String UP_FIRST_NAME = "Carlos2";
+        String UP_LAST_NAME = "Perez2";
+        String UP_EMAIL = "carlos2.perez@petclinic.com";
+        String UP_PHONE = "999111222";
+        Boolean UP_ACTIVE = false;
+
+        VetDTO vetDTO = VetDTO.builder()
+                .firstName(FIRST_NAME)
+                .lastName(LAST_NAME)
+                .email(EMAIL)
+                .phone(PHONE)
+                .active(ACTIVE)
+                .build();
+
+        // ------------ Create ---------------
+        log.info(">" + vetDTO);
+        VetDTO vetDTOCreated = this.vetService.create(vetDTO);
+        log.info(">>" + vetDTOCreated);
+
+        // ------------ Update ---------------
+        vetDTOCreated.setFirstName(UP_FIRST_NAME);
+        vetDTOCreated.setLastName(UP_LAST_NAME);
+        vetDTOCreated.setEmail(UP_EMAIL);
+        vetDTOCreated.setPhone(UP_PHONE);
+        vetDTOCreated.setActive(UP_ACTIVE);
+
+        VetDTO upgradeVetDTO = this.vetService.update(vetDTOCreated);
+        log.info(">>>>" + upgradeVetDTO);
+
+        //            EXPECTED        ACTUAL
+        assertEquals(UP_FIRST_NAME, upgradeVetDTO.getFirstName());
+        assertEquals(UP_LAST_NAME, upgradeVetDTO.getLastName());
+        assertEquals(UP_EMAIL, upgradeVetDTO.getEmail());
+        assertEquals(UP_PHONE, upgradeVetDTO.getPhone());
+        assertEquals(UP_ACTIVE, upgradeVetDTO.getActive());
+    }
+
 }
