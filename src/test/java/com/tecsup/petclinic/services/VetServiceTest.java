@@ -34,4 +34,14 @@ public class VetServiceTest {
         });
     }
 
+    @Test
+    public void testDeactivateVet_NotFound() {
+        Integer idInexistente = 999;
+
+        Mockito.when(vetRepository.findById(idInexistente)).thenReturn(Optional.empty());
+
+        assertThrows(VetNotFoundException.class, () -> {
+            vetService.deactivate(idInexistente);
+        });
+    }
 }
