@@ -37,5 +37,32 @@ public class VetServiceTest {
         assertEquals(FIRST_NAME_EXPECTED, vet.getFirstName());
         assertEquals(LAST_NAME_EXPECTED, vet.getLastName());
     }
+    @Test
+    public void testCreateVet() {
 
+        String FIRST_NAME = "Ana";
+        String LAST_NAME = "Merino";
+        String EMAIL = "ana.merino@petclinic.com";
+        String PHONE = "987654321";
+        Boolean ACTIVE = true;
+
+        VetDTO vetDTO = VetDTO.builder()
+                .firstName(FIRST_NAME)
+                .lastName(LAST_NAME)
+                .email(EMAIL)
+                .phone(PHONE)
+                .active(ACTIVE)
+                .build();
+
+        VetDTO newVetDTO = this.vetService.create(vetDTO);
+
+        log.info("VET CREATED: " + newVetDTO.toString());
+
+        assertNotNull(newVetDTO.getId());
+        assertEquals(FIRST_NAME, newVetDTO.getFirstName());
+        assertEquals(LAST_NAME, newVetDTO.getLastName());
+        assertEquals(EMAIL, newVetDTO.getEmail());
+        assertEquals(PHONE, newVetDTO.getPhone());
+        assertEquals(ACTIVE, newVetDTO.getActive());
+    }
 }
