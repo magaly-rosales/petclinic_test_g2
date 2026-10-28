@@ -24,7 +24,66 @@ public class VetServiceTest {
     @MockitoBean
     private VetRepository vetRepository;
 
-    //Equipo
+    // ===== INTEGRANTE A: Ana =====
+
+    @Test
+    public void testCreateVet() {
+        // Preparar
+        VetDTO vetDTO = VetDTO.builder()
+                .firstName("Ana")
+                .lastName("Merino")
+                .email("ana.merino@petclinic.com")
+                .phone("987654321")
+                .active(true)
+                .build();
+        Vet vetGuardado = new Vet(10, "Ana", "Merino", "ana.merino@petclinic.com", "987654321", true);
+        when(vetRepository.save(any(Vet.class))).thenReturn(vetGuardado);
+
+        // Ejecutar
+        VetDTO resultado = vetService.create(vetDTO);
+
+        // Verificar
+        assertNotNull(resultado.getId());
+        assertEquals("Ana", resultado.getFirstName());
+        assertEquals("Merino", resultado.getLastName());
+    }
+
+    @Test
+    public void testUpdateVet() {
+        // Preparar
+        VetDTO vetDTO = VetDTO.builder()
+                .id(10)
+                .firstName("Carlos2")
+                .lastName("Perez2")
+                .email("carlos2.perez@petclinic.com")
+                .phone("999111222")
+                .active(true)
+                .build();
+        Vet vetActualizado = new Vet(10, "Carlos2", "Perez2", "carlos2.perez@petclinic.com", "999111222", true);
+        when(vetRepository.save(any(Vet.class))).thenReturn(vetActualizado);
+
+        // Ejecutar
+        VetDTO resultado = vetService.update(vetDTO);
+
+        // Verificar
+        assertEquals("Carlos2", resultado.getFirstName());
+        assertEquals("Perez2", resultado.getLastName());
+        assertEquals("999111222", resultado.getPhone());
+    }
+
+    @Test
+    public void testFindVetById() throws VetNotFoundException {
+        // Preparar
+        Vet vet = new Vet(1, "James", "Carter", "james@mail.com", "999", true);
+        when(vetRepository.findById(1)).thenReturn(Optional.of(vet));
+
+        // Ejecutar
+        VetDTO resultado = vetService.findById(1);
+
+        // Verificar
+        assertEquals("James", resultado.getFirstName());
+        assertEquals("Carter", resultado.getLastName());
+    }
 
     // ===== INTEGRANTE B: Magaly =====
 
