@@ -3,14 +3,8 @@ package com.tecsup.petclinic.services;
 import com.tecsup.petclinic.dtos.VetDTO;
 import com.tecsup.petclinic.entities.Vet;
 import com.tecsup.petclinic.exceptions.VetNotFoundException;
-
-import com.tecsup.petclinic.dtos.VetDTO;
-import com.tecsup.petclinic.exceptions.VetNotFoundException;
 import com.tecsup.petclinic.repositories.VetRepository;
 import org.junit.jupiter.api.Test;
-import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -20,13 +14,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 public class VetServiceTest {
@@ -39,12 +26,7 @@ public class VetServiceTest {
 
     //Equipo
 
-    // ===== INTEGRANTE B Magaly =====
-    @Test
-    public void testFindVetById_NotFound() {
-        Integer idInexistente = 999;
-
-        Mockito.when(vetRepository.findById(idInexistente)).thenReturn(Optional.empty());
+    // ===== INTEGRANTE B: Magaly =====
 
     @Test
     public void testDeactivateVet() throws VetNotFoundException {
@@ -87,6 +69,15 @@ public class VetServiceTest {
         // Verificar
         assertEquals(2, resultado.size());
     }
+
+    // ===== INTEGRANTE C: Jeff =====
+
+    @Test
+    public void testFindVetById_NotFound() {
+        Integer idInexistente = 999;
+
+        when(vetRepository.findById(idInexistente)).thenReturn(Optional.empty());
+
         assertThrows(VetNotFoundException.class, () -> {
             vetService.findById(idInexistente);
         });
@@ -96,7 +87,7 @@ public class VetServiceTest {
     public void testDeactivateVet_NotFound() {
         Integer idInexistente = 999;
 
-        Mockito.when(vetRepository.findById(idInexistente)).thenReturn(Optional.empty());
+        when(vetRepository.findById(idInexistente)).thenReturn(Optional.empty());
 
         assertThrows(VetNotFoundException.class, () -> {
             vetService.deactivate(idInexistente);
@@ -105,10 +96,15 @@ public class VetServiceTest {
 
     @Test
     public void testFindInactiveVets() {
+        // Preparar: 1 veterinario INACTIVO
+        Vet vet = new Vet(6, "Sharon", "Jenkins", "sharon@mail.com", "999", false);
+        when(vetRepository.findByActive(false)).thenReturn(List.of(vet));
+
+        // Ejecutar
         List<VetDTO> inactivos = vetService.findInactiveVets();
 
-        assertNotNull(inactivos);
-        assertTrue(inactivos.isEmpty());
+        // Verificar
+        assertEquals(1, inactivos.size());
+        assertFalse(inactivos.get(0).getActive());
     }
-
 }
