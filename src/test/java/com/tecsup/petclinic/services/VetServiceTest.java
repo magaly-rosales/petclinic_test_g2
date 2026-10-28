@@ -3,8 +3,14 @@ package com.tecsup.petclinic.services;
 import com.tecsup.petclinic.dtos.VetDTO;
 import com.tecsup.petclinic.entities.Vet;
 import com.tecsup.petclinic.exceptions.VetNotFoundException;
+
+import com.tecsup.petclinic.dtos.VetDTO;
+import com.tecsup.petclinic.exceptions.VetNotFoundException;
 import com.tecsup.petclinic.repositories.VetRepository;
 import org.junit.jupiter.api.Test;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -14,6 +20,13 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 public class VetServiceTest {
@@ -27,6 +40,11 @@ public class VetServiceTest {
     //Equipo
 
     // ===== INTEGRANTE B Magaly =====
+    @Test
+    public void testFindVetById_NotFound() {
+        Integer idInexistente = 999;
+
+        Mockito.when(vetRepository.findById(idInexistente)).thenReturn(Optional.empty());
 
     @Test
     public void testDeactivateVet() throws VetNotFoundException {
@@ -69,4 +87,28 @@ public class VetServiceTest {
         // Verificar
         assertEquals(2, resultado.size());
     }
+        assertThrows(VetNotFoundException.class, () -> {
+            vetService.findById(idInexistente);
+        });
+    }
+
+    @Test
+    public void testDeactivateVet_NotFound() {
+        Integer idInexistente = 999;
+
+        Mockito.when(vetRepository.findById(idInexistente)).thenReturn(Optional.empty());
+
+        assertThrows(VetNotFoundException.class, () -> {
+            vetService.deactivate(idInexistente);
+        });
+    }
+
+    @Test
+    public void testFindInactiveVets() {
+        List<VetDTO> inactivos = vetService.findInactiveVets();
+
+        assertNotNull(inactivos);
+        assertTrue(inactivos.isEmpty());
+    }
+
 }
