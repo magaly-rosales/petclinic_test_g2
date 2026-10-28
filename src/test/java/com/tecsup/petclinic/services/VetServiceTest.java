@@ -26,7 +26,7 @@ public class VetServiceTest {
 
     //Equipo
 
-    // ===== INTEGRANTE B Magaly =====
+    // ===== INTEGRANTE B: Magaly =====
 
     @Test
     public void testDeactivateVet() throws VetNotFoundException {
@@ -68,5 +68,43 @@ public class VetServiceTest {
 
         // Verificar
         assertEquals(2, resultado.size());
+    }
+
+    // ===== INTEGRANTE C: Jeff =====
+
+    @Test
+    public void testFindVetById_NotFound() {
+        Integer idInexistente = 999;
+
+        when(vetRepository.findById(idInexistente)).thenReturn(Optional.empty());
+
+        assertThrows(VetNotFoundException.class, () -> {
+            vetService.findById(idInexistente);
+        });
+    }
+
+    @Test
+    public void testDeactivateVet_NotFound() {
+        Integer idInexistente = 999;
+
+        when(vetRepository.findById(idInexistente)).thenReturn(Optional.empty());
+
+        assertThrows(VetNotFoundException.class, () -> {
+            vetService.deactivate(idInexistente);
+        });
+    }
+
+    @Test
+    public void testFindInactiveVets() {
+        // Preparar: 1 veterinario INACTIVO
+        Vet vet = new Vet(6, "Sharon", "Jenkins", "sharon@mail.com", "999", false);
+        when(vetRepository.findByActive(false)).thenReturn(List.of(vet));
+
+        // Ejecutar
+        List<VetDTO> inactivos = vetService.findInactiveVets();
+
+        // Verificar
+        assertEquals(1, inactivos.size());
+        assertFalse(inactivos.get(0).getActive());
     }
 }
