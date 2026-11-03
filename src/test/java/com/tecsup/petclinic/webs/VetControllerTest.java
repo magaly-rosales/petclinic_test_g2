@@ -20,7 +20,33 @@ public class VetControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    //Equipo
 
+    // ===== INTEGRANTE A: Ana =====
+
+    @Test
+    public void testFindAllVets() throws Exception {
+        mockMvc.perform(get("/vets"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].id").exists())
+                .andExpect(jsonPath("$[0].firstName").exists());
+    }
+
+    @Test
+    public void testFindVetOK() throws Exception {
+        mockMvc.perform(get("/vets/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.lastName").value("Carter"));
+    }
+
+    @Test
+    public void testFindVetKO() throws Exception {
+        mockMvc.perform(get("/vets/666"))
+                .andExpect(status().isNotFound());
+    }
 
     // ===== INTEGRANTE B: Magaly =====
 

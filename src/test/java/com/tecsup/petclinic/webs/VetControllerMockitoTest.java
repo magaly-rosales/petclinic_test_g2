@@ -1,6 +1,7 @@
 package com.tecsup.petclinic.webs;
 
 import com.tecsup.petclinic.dtos.VetDTO;
+import com.tecsup.petclinic.exceptions.VetNotFoundException;
 import com.tecsup.petclinic.services.VetService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.List;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -27,6 +30,39 @@ public class VetControllerMockitoTest {
     private VetService vetService;
 
     //Equipo
+
+    // ===== INTEGRANTE A: Ana =====
+
+    @Test
+    public void testFindAllVets() throws Exception {
+        VetDTO vet1 = new VetDTO(1, "James", "Carter", "", "", true);
+        VetDTO vet2 = new VetDTO(2, "Helen", "Leary", "", "", true);
+        when(vetService.findAll()).thenReturn(List.of(vet1, vet2));
+
+        mockMvc.perform(get("/vets"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].lastName").value("Carter"))
+                .andExpect(jsonPath("$[1].lastName").value("Leary"));
+    }
+
+    @Test
+    public void testFindVetOK() throws Exception {
+        VetDTO vet = new VetDTO(1, "James", "Carter", "", "", true);
+        when(vetService.findById(1)).thenReturn(vet);
+
+        mockMvc.perform(get("/vets/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.lastName").value("Carter"));
+    }
+
+    @Test
+    public void testFindVetKO() throws Exception {
+        when(vetService.findById(666)).thenThrow(new VetNotFoundException("Vet not found...!"));
+
+        mockMvc.perform(get("/vets/666"))
+                .andExpect(status().isNotFound());
+    }
 
     // ===== INTEGRANTE B: Magaly =====
 
