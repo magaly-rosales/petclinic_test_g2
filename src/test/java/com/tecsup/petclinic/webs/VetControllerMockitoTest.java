@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.tecsup.petclinic.dtos.VetDTO;
 import com.tecsup.petclinic.services.VetService;
+import com.tecsup.petclinic.exceptions.VetNotFoundException;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -44,7 +45,6 @@ public class VetControllerMockitoTest {
 
         List<VetDTO> vets = Arrays.asList(vet1, vet2);
 
-        // Usamos findAll() asegurando que la interfaz VetService retorne List<VetDTO>
         given(vetService.findAll()).willReturn(vets);
 
         mockMvc.perform(get("/vets"))
@@ -74,7 +74,8 @@ public class VetControllerMockitoTest {
 
     @Test
     public void testFindVetKO() throws Exception {
-        given(vetService.findById(666)).willThrow(new Exception("Vet not found"));
+        // Ahora sí usamos la excepción correcta del proyecto
+        given(vetService.findById(666)).willThrow(new VetNotFoundException("Vet not found...!"));
 
         mockMvc.perform(get("/vets/666"))
                 .andExpect(status().isNotFound());
