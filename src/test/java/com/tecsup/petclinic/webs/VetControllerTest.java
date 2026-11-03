@@ -12,6 +12,13 @@ import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
@@ -40,6 +47,29 @@ public class VetControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.lastName").value("Carter"));
+    }
+    
+
+    @Test
+    public void testFindActiveVets() throws Exception {
+        mockMvc.perform(get("/vets")
+                        .param("active", "true"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(5)));
+    }
+
+    @Test
+    public void testFindInactiveVets() throws Exception {
+        mockMvc.perform(get("/vets")
+                        .param("active", "false"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)));
+    }
+
+    @Test
+    public void testDeleteVetKO() throws Exception {
+        mockMvc.perform(delete("/vets/1000"))
+                .andExpect(status().isNotFound());
     }
 
     @Test
