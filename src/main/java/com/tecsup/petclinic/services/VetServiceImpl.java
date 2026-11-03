@@ -64,4 +64,15 @@ public class VetServiceImpl implements VetService {
     public List<VetDTO> findInactiveVets() {
         return vetRepository.findByActive(false).stream().map(vetMapper::mapToDto).toList();
     }
+    @Override
+    public List<VetDTO> findAll() {
+        return vetRepository.findAll().stream().map(vetMapper::mapToDto).toList();
+    }
+
+    @Override
+    public void delete(Integer id) throws VetNotFoundException {
+        Vet vet = vetRepository.findById(id)
+                .orElseThrow(() -> new VetNotFoundException("Vet not found...!"));
+        vetRepository.delete(vet);
+    }
 }
