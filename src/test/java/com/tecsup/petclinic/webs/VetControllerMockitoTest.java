@@ -17,7 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.tecsup.petclinic.entities.Vet;
+import com.tecsup.petclinic.dtos.VetDTO;
 import com.tecsup.petclinic.services.VetService;
 
 @SpringBootTest
@@ -32,10 +32,17 @@ public class VetControllerMockitoTest {
 
     @Test
     public void testFindAllVets() throws Exception {
-        List<Vet> vets = Arrays.asList(
-                new Vet(1, "James", "Carter"),
-                new Vet(2, "Helen", "Leary")
-        );
+        VetDTO vet1 = new VetDTO();
+        vet1.setId(1);
+        vet1.setFirstName("James");
+        vet1.setLastName("Carter");
+
+        VetDTO vet2 = new VetDTO();
+        vet2.setId(2);
+        vet2.setFirstName("Helen");
+        vet2.setLastName("Leary");
+
+        List<VetDTO> vets = Arrays.asList(vet1, vet2);
 
         given(vetService.findAll()).willReturn(vets);
 
@@ -50,7 +57,10 @@ public class VetControllerMockitoTest {
 
     @Test
     public void testFindVetOK() throws Exception {
-        Vet vet = new Vet(1, "James", "Carter");
+        VetDTO vet = new VetDTO();
+        vet.setId(1);
+        vet.setFirstName("James");
+        vet.setLastName("Carter");
 
         given(vetService.findById(1)).willReturn(vet);
 
