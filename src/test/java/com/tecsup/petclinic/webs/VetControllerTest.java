@@ -25,4 +25,12 @@ public class VetControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(5)));
     }
+
+    @Test
+    public void testFindInactiveVets() throws Exception {
+        mockMvc.perform(get("/vets")
+                        .param("active", "false"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)));
+    }
 }
