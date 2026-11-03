@@ -44,6 +44,7 @@ public class VetControllerMockitoTest {
 
         List<VetDTO> vets = Arrays.asList(vet1, vet2);
 
+        // Usamos findAll() asegurando que la interfaz VetService retorne List<VetDTO>
         given(vetService.findAll()).willReturn(vets);
 
         mockMvc.perform(get("/vets"))
