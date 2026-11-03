@@ -1,4 +1,71 @@
 package com.tecsup.petclinic.webs;
 
+import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+
+import com.tecsup.petclinic.entities.Vet;
+import com.tecsup.petclinic.services.VetService;
+
+@SpringBootTest
+@AutoConfigureMockMvc
 public class VetControllerMockitoTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockitoBean
+    private VetService vetService;
+
+    @Test
+    public void testFindAllVets() throws Exception {
+        List<Vet> vets = Arrays.asList(
+                new Vet(1, "James", "Carter"),
+                new Vet(2, "Helen", "Leary")
+        );
+
+        given(vetService.findAll()).willReturn(vets);
+
+        mockMvc.perform(get("/vets"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].lastName").value("Carter"))
+                .andExpect(jsonPath("$[1].id").value(2))
+                .andExpect(jsonPath("$[1].lastName").value("Leary"));
+    }
+
+    @Test
+    public void testFindVetOK() throws Exception {
+        Vet vet = new Vet(1, "James", "Carter");
+
+        given(vetService.findById(1)).willReturn(vet);
+
+        mockMvc.perform(get("/vets/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.lastName").value("Carter"));
+    }
+
+    @Test
+    public void testFindVetKO() throws Exception {
+        given(vetService.findById(666)).willThrow(new Exception("Vet not found"));
+
+        mockMvc.perform(get("/vets/666"))
+                .andExpect(status().isNotFound());
+    }
 }
